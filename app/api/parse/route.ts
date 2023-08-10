@@ -5,10 +5,17 @@ export async function POST(request: Request) {
   try {
     const { personText, jobText } = await request.json();
 
-    console.log("Received data:", { personText, jobText });
+    console.log("Received data ready for parse:", { personText, jobText });
 
-    const personInfo = await get_person_info(personText);
-    const jobInfo = await get_job_info(jobText);
+    let personInfo, jobInfo;
+
+    if (personText) {
+      personInfo = await get_person_info(personText);
+    }
+
+    if (jobText) {
+      jobInfo = await get_job_info(jobText);
+    }
 
     return NextResponse.json({ personInfo, jobInfo });
   } catch (error) {

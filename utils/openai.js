@@ -40,36 +40,56 @@ export async function extract_data_from_text(text) {
 }
 
 // Function to get person information using GPT-3
-export async function get_person_info(person_info) {
+export async function get_person_info(personText) {
   const prompt =
-    `Extract person information { name: str, skills: List[str], experience, List[str], education, List[str], certifications_licenses, List[str], projects: List[str]}` +
-    person_info;
+    `Extract person information {
+        name: string,
+        important_info: string,
+        work_experience: List[string],
+        skills: List[string],
+        knowledge: List[string],
+        experience: List[string],
+        year_experience: string,
+        education: List[string],
+        certifications_licenses: List[string],
+        languages: List[string],
+        interests: List[string],
+          }` +
+    personText;
 
   return extract_data_from_text(prompt);
 }
 
 // Function to get job information using GPT-3
-export async function get_job_info(job_info) {
+export async function get_job_info(jobText) {
   const prompt =
     `Extract job information { company_name: string, job_description: string, seniority_level: string, industry: sting, job_function: string, employment_type: string, job_id: string, job_loca }` +
-    job_info;
+    jobText;
 
   return extract_data_from_text(prompt);
 }
 
 // Function to write a cover letter using GPT-3
-export async function write_cover_letter(personal_details, job_details) {
-  const prompt = `You are a hiring assistant
+// Make the write_cover_letter function async
+export async function write_cover_letter( personJson, jobJson) {
+  console.log("Received personJson at GPT:", personJson);
+  console.log("Received jobJson:", jobJson);
+
+  // Construct the prompt with the received data
+  const fullPrompt = `You are a Coverletter GPT-3 writer.
 
     Write a cover letter following these guidelines
 
     /* ... cover letter guidelines ... */
 
     job details 
-    ${job_details}
+     ${JSON.stringify(jobJson)}
 
     personal details
-    ${personal_details}`;
+    ${JSON.stringify(personJson)}
+
+
+    `;
 
   try {
     const response = await openai.createChatCompletion({
@@ -80,7 +100,7 @@ export async function write_cover_letter(personal_details, job_details) {
           content:
             "You are a cover letter writer. Be concise. Respond only with markdown",
         },
-        { role: "user", content: prompt },
+        { role: "user", content: fullPrompt },
       ],
       temperature: 0.7,
       max_tokens: 1000,
@@ -88,7 +108,10 @@ export async function write_cover_letter(personal_details, job_details) {
       frequency_penalty: 0.2,
       presence_penalty: 0.2,
     });
-    return response.data.choices[0].message;
+
+    // Return the generated cover letter
+    return response.data.choices[0].message.content;
+    
   } catch (error) {
     console.log(`Failed to generate data.\n\nError: ${error}`);
     return "";

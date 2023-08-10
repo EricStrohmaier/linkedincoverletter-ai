@@ -1,0 +1,5 @@
+{
+    "editor.formatOnSave": true,
+    "editor.formatOnSaveMode": "modificationsIfAvailable",
+    "prettier.configPath": "{   \"editor.defaultFormatter\": \"esbenp.prettier-vscode\",   \"[javascript]\": {     \"editor.defaultFormatter\": \"esbenp.prettier-vscode\"   } }"
+}

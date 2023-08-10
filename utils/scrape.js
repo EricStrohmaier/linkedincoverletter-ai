@@ -3,12 +3,13 @@ import puppeteer from "puppeteer-core";
 export async function scrape(url) {
 
   let browser;
+
+
   const auth = process.env.SUPERPROXY_AUTH;
 
   try {
-
     browser = await puppeteer.connect({
-      browserWSEndpoint: `wss://${auth}@brd.superproxy.io:9222`,
+       browserWSEndpoint: `wss://${auth}@brd.superproxy.io:9222`,
     });
     // browser = await puppeteer.launch({
     //   headless: "new", 
@@ -35,11 +36,10 @@ export async function scrape(url) {
 
     if (sectionContent) {
       // Remove the \n characters and unnecessary spaces
-      const cleanedContent = sectionContent
-        .replace(/\n/g, "")
-        .replace(/\s{2,}/g, "")
-        .trim();
-
+    const cleanedContent = sectionContent
+  .replace(/\n/g, "")
+  .replace(/\s+/g, " ") // Replace multiple spaces with a single space
+  .trim();
       //console.log(cleanedContent);
       return cleanedContent;
 
